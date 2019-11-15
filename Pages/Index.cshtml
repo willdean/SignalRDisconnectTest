@@ -1,0 +1,46 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+    <div>
+        <p>
+            This button will send a 'Good' test message containing just a random integer
+            <button onclick="sendGood()">Good</button>
+        </p>
+        <p>
+            This button will cause SignalR to disconnect.
+            <button onclick="sendBad()">Bad</button>
+        </p>
+        <p>Look at the browser console to see what's going on</p>
+    </div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script>
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/testHub").build();
+
+    connection.on("good", function (message) {
+        console.log("Received good message: " + message);
+        });
+    connection.on("bad", function (message) {
+        console.log("Received bad message: " + message);
+        });
+
+    connection.start();
+
+    function sendGood() 
+    {
+        var http = new XMLHttpRequest();
+        http.open("POST", "/test/good", false);
+        http.send();
+    }
+    function sendBad() 
+    {
+        var http = new XMLHttpRequest();
+        http.open("POST", "/test/bad", false);
+        http.send();
+    }
+
+</script>
